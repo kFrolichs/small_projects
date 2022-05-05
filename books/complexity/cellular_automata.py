@@ -33,11 +33,16 @@ pos = [i for i in range(lattice_len)]
 pos.insert(0,-1)
 pos.append(0)
 
-fig, ax = plt.subplots()
-# Loop over the lattice and create a new lattice
+# For plotting the figure dynamically
+plt.ion()
+test = plt.imshow(latMat)
+plt.show()
+
 new_lat = ['0' for _ in range(lattice_len)]
 int_lat = [0 for _ in range(lattice_len)]
 for ts in range(timestep):
+    plt.cla()
+    # plt.clf()
     # Ugly solution
     for iInt in range(lattice_len):
         int_lat[iInt] = int(lattice[iInt])
@@ -49,6 +54,6 @@ for ts in range(timestep):
         new_lat[idx] = state_rule[state]
     lattice = new_lat
 
-# Plotting the results (Need to convert the string to integers)
-ax.imshow(latMat)
-plt.show()
+    plt.imshow(latMat)
+    plt.draw()
+    plt.pause(.001)
