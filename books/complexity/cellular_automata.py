@@ -41,8 +41,7 @@ plt.show()
 new_lat = ['0' for _ in range(lattice_len)]
 int_lat = [0 for _ in range(lattice_len)]
 for ts in range(timestep):
-    plt.cla()
-    # plt.clf()
+    plt.cla() # clear figure axes plt.clf() also works
     # Ugly solution
     for iInt in range(lattice_len):
         int_lat[iInt] = int(lattice[iInt])
