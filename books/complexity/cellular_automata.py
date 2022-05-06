@@ -9,29 +9,44 @@ lattice_len = 100
 timestep = 100
 latMat = np.zeros((timestep,lattice_len))
 
-state_options = num_state**radius
-number_rules  = num_state**state_options
+def setup_ca(radius = 3, num_state = 2, rule = "random"):
+    """ Returns a dictionary with specific state rules for the automata
+    Standard settings will create an 8 bit state cellular automa
+    With a random rule from [0-255]"""
+    state_options = num_state**radius
+    number_rules  = num_state**state_options
+    print(len(str(number_rules)))
+    if rule == "random" and state_options < 64:
+        # Cannot create a random rule for radius >= 7
+        rNum = np.random.randint(0,number_rules+1, dtype=np.int64)
+        rule = format(rNum, f'0{state_options}b')
+    else:
+        rNum = int(input(f'Please choose a rule [1-{number_rules}]: '))-1
+        rule = format(rNum, f'0{state_options}b')
 
-# Choose a rule and convert to binary
-rNum = int(input(f'Please choose a rule [1-{number_rules}]: '))-1
-rule = format(rNum, '08b')
-print(f'Your chosen rule: {rule}')
+    state_rule = {}
+    for i in range(state_options):
+        state_rule[format(i,f'0{radius}b')] = rule[i]
+    return state_rule, rNum
 
-# Attach the rule to the states
-state_rule = {}
-for i in range(state_options):
-    state_rule[format(i,'03b')] = rule[i]
+def getStates(idx, lattice, radius, lattice_len):
+    """returns the lattice states around the idx in size radius"""
+    checkIdx = list(range(-(radius//2)+idx,(radius//2)+idx+1))
+    stateStr = ''
+    for i in checkIdx:
+        if i > lattice_len-1:
+            stateStr += lattice[i%lattice_len]
+        else:
+            stateStr += lattice[i]
+    return stateStr
+
+state_rule, ruleNum = setup_ca(radius)
 
 # Create a random lattice (change numbers to strings)
 lat = np.random.randint(0,2,lattice_len)
 lattice = []
 for l in lat:
     lattice.append(str(l))
-
-# Check each position of the lattice
-pos = [i for i in range(lattice_len)]
-pos.insert(0,-1)
-pos.append(0)
 
 # For plotting the figure dynamically
 plt.ion()
@@ -49,10 +64,11 @@ for ts in range(timestep):
 
     # print(lattice)
     for idx in range(lattice_len):
-        state = lattice[pos[idx-1]]+lattice[pos[idx]]+lattice[pos[idx+1]]
+        state = getStates(idx, lattice, radius, lattice_len)
         new_lat[idx] = state_rule[state]
     lattice = new_lat
 
     plt.imshow(latMat)
+    plt.title(f'Rule: {ruleNum}')
     plt.draw()
     plt.pause(.001)
