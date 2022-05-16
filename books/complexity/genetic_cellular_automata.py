@@ -55,6 +55,7 @@ def getStates(idx, lattice, radius, lattice_len):
 # For plotting the figure dynamically
 plt.ion()
 test = plt.imshow(latMat)
+plt.title(f'Rule:{rand_rule}')
 plt.show()
 
 new_lat = ['0' for _ in range(lattice_len)]
