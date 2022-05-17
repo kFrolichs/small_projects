@@ -22,7 +22,7 @@ def setup_ca(radius = 3, num_state = 2, rule = "random"):
         rNum = np.random.randint(0,number_rules+1, dtype=np.int64)
         rule = format(rNum, f'0{state_options}b')
     else:
-        rNum = int(input(f'Please choose a rule [1-{number_rules}]: '))-1
+        rNum = int(input(f'Please choose a rule [1-{number_rules}]: '))
         rule = format(rNum, f'0{state_options}b')
 
     state_rule = {}
@@ -77,7 +77,7 @@ def show_ca(full_mat, fig_title, anim = True):
         for i in range(1,timesteps[0]):
             # Fill-in the matrix timestep by timestep
             show_mat[i,:] = full_mat[i,:]
-            im = ax.imshow(show_mat, animated=True)
+            im = ax.imshow(show_mat, animated=True, cmap='Greys')
             if i == 0:  # show an initial one first
                 show_mat[0,:] = full_mat[0,:]
                 ax.imshow(show_mat)
@@ -86,10 +86,10 @@ def show_ca(full_mat, fig_title, anim = True):
         ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat=False)
     # If you just want the static end image
     else:
-        im = ax.imshow(full_mat)
+        im = ax.imshow(full_mat, cmap='Greys')
     plt.title(fig_title)
     plt.show()
 
-state_rule, ruleNum = setup_ca(radius)
+state_rule, ruleNum = setup_ca(radius,2,'Choose Rule')
 lat_mat = calc_ca(state_rule, lattice_len, timestep)
 show_ca(latMat,f'Rule: {ruleNum}',True)
